@@ -1,4 +1,7 @@
-class circus::configure {
+class circus::configure (
+  $include_dir = '/etc/circus/conf.d',
+  $logoutput   = "${::circus::log_prefix}/circus/circusd.log",
+) {
   file { "${::circus::conf_prefix}/circus":
     ensure => 'directory',
     owner  => '0',
@@ -66,25 +69,7 @@ class circus::configure {
     mode   => '0644',
   }
 
-  ::circus::setting { 'check_delay'    : value => 5, }
-  ::circus::setting { 'endpoint'       : value => 'tcp://127.0.0.1:5555', }
-  ::circus::setting { 'pubsub_endpoint': value => 'tcp://127.0.0.1:5556', }
-  ::circus::setting { 'stats_endpoint' : value => 'tcp://127.0.0.1:5557', }
-  ::circus::setting { 'include_dir'    : value => '/etc/circus/conf.d', }
-  ::circus::setting { 'logoutput'      : value => "${::circus::log_prefix}/circus/circusd.log", }
+  ::circus::setting { 'include_dir' : value => $include_dir, }
+  ::circus::setting { 'logoutput'   : value => $logoutput, }
 
-  ::circus::setting { 'use':
-    value   => 'circus.plugins.flapping.Flapping',
-    section => 'plugin:flapping',
-  }
-
-  ::circus::setting { 'retry_in':
-    value   => 3,
-    section => 'plugin:flapping',
-  }
-
-  ::circus::setting { 'max_retry':
-    value   => 2,
-    section => 'plugin:flapping',
-  }
 }
